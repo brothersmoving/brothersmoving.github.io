@@ -1,0 +1,11 @@
+{
+  "name": "game",
+  "version": "0.0.1",
+  "description": "test game",
+  "main": "animation.js",
+  "scripts": {
+    "test": ""
+  },
+  "author": "c.woolf",
+  "license": "ISC"
+}
