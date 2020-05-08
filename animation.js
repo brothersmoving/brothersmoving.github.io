@@ -78,6 +78,8 @@ frame sets. */
     left:  { active:false, state:false },
     right: { active:false, state:false },
     up:    { active:false, state:false },
+    down:  { active:false, state:false }, 
+    a:  { active:false, state:false }, 
 
     keyUpDown:function(event) {
 
@@ -110,7 +112,19 @@ frame sets. */
           controller.right.state  = key_state;
 
         break;
+        case 40:// down key
 
+        if (controller.down.state != key_state) controller.down.active = key_state;
+        controller.down.state  = key_state;
+
+      break;
+      //TODO: add character select
+          case 65:// down key
+          
+          if (controller.a.state != key_state) controller.a.active = key_state;
+          controller.a.state  = key_state;
+          
+        break;
       }
 
       //console.log("left:  " + controller.left.state + ", " + controller.left.active + "\nright: " + controller.right.state + ", " + controller.right.active + "\nup:    " + controller.up.state + ", " + controller.up.active);
@@ -122,11 +136,11 @@ frame sets. */
   /* The player object is just a rectangle with an animation object. */
   player = {
 
-    animation:new Animation(),// You don't need to setup Animation right away.
-    jumping:true,
-    height:16,    width:16,
-    x:0,          y:40 - 18,
-    x_velocity:0, y_velocity:0
+    animation: new Animation(),// You don't need to setup Animation right away.
+    jumping: true,
+    height: 16,    width: 16,
+    x: 0,          y: 40 - 18,
+    x_velocity: 0, y_velocity: 0
 
   };
 
@@ -136,10 +150,11 @@ frame sets. */
   sprite_sheet = {
 
     frame_sets:[[0, 1], [2, 3], [4, 5]],// standing still, walk right, walk left
-    image:new Image()
+    image:new Image(),
+    character: [["aske.png"], ["espen.png"]]
 
   };
-
+    
   loop = function(time_stamp) {
 
     if (controller.up.active && !player.jumping) {
@@ -147,6 +162,13 @@ frame sets. */
       controller.up.active = false;
       player.jumping = true;
       player.y_velocity -= 5;
+
+    }
+
+    if (controller.down.active) {
+      /* To change the animation, all you have to do is call animation.change. */
+      player.animation.change(sprite_sheet.frame_sets[1], 15);
+      player.x_velocity -= 0.00;
 
     }
 
@@ -263,13 +285,5 @@ frame sets. */
 
   });
 
-  if ( true === true) {
-
       sprite_sheet.image.src = "espen.png";// Start loading the image.
-
-    }else {
-        
-         sprite_sheet.image.src = "animation.png";
-
-  }
 })();
