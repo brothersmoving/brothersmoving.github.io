@@ -80,6 +80,8 @@ frame sets. */
     up:    { active:false, state:false },
     down:  { active:false, state:false }, 
     a:  { active:false, state:false }, 
+    e:  { active:false, state:false }, 
+    n:  { active:false, state:false }, 
 
     keyUpDown:function(event) {
 
@@ -117,15 +119,28 @@ frame sets. */
         if (controller.down.state != key_state) controller.down.active = key_state;
         controller.down.state  = key_state;
 
-      break;
-      //TODO: add character select
-          case 65:// down key
+        break;
+        //TODO: add character select - done! @00:35am Monday 11th May 2020
+        case 65:// a key
           
-          if (controller.a.state != key_state) controller.a.active = key_state;
-          controller.a.state  = key_state;
+        if (controller.a.state != key_state) controller.a.active = key_state;
+        controller.a.state  = key_state;
+          
+        break;
+        case 69:// e key
+          
+        if (controller.e.state != key_state) controller.e.active = key_state;
+        controller.e.state  = key_state;
+          
+        break;
+        case 78:// n key
+          
+        if (controller.n.state != key_state) controller.n.active = key_state;
+        controller.n.state  = key_state;
           
         break;
       }
+      
 
       //console.log("left:  " + controller.left.state + ", " + controller.left.active + "\nright: " + controller.right.state + ", " + controller.right.active + "\nup:    " + controller.up.state + ", " + controller.up.active);
 
@@ -144,6 +159,8 @@ frame sets. */
 
   };
 
+  //TODO: add some good ol' NYC COPS
+
   /* The sprite sheet object holds the sprite sheet graphic and some animation frame
   sets. An animation frame set is just an array of frame values that correspond to
   each sprite image in the sprite sheet, just like a tile sheet and a tile map. */
@@ -151,7 +168,6 @@ frame sets. */
 
     frame_sets:[[0, 1], [2, 3], [4, 5]],// standing still, walk right, walk left
     image:new Image(),
-    character: [["aske.png"], ["espen.png"]]
 
   };
     
@@ -193,6 +209,24 @@ frame sets. */
       player.animation.change(sprite_sheet.frame_sets[0], 20);
 
     }
+    
+    if (controller.e.active) {
+      player.animation.change(sprite_sheet.image.src = "espen.png");
+      
+    } 
+    
+    if (controller.a.active) {
+      player.animation.change(sprite_sheet.image.src = "aske-t.png");
+      
+    } 
+    
+    if (controller.n.active) {
+      player.animation.change(sprite_sheet.image.src = "nils.png");
+      
+    } 
+    
+    if (!controller.a.active && !controller.e.active && !controller.n.active){
+
 
     player.y_velocity += 0.25;
 
@@ -224,6 +258,7 @@ frame sets. */
     render();
 
     window.requestAnimationFrame(loop);
+  }
 
   };
 
@@ -285,5 +320,6 @@ frame sets. */
 
   });
 
-      sprite_sheet.image.src = "espen.png";// Start loading the image.
+      sprite_sheet.image.src = "espen.png"// Start loading the image.
+
 })();
