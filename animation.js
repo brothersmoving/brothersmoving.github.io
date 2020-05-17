@@ -82,6 +82,7 @@ frame sets. */
     a:  { active:false, state:false }, 
     e:  { active:false, state:false }, 
     n:  { active:false, state:false }, 
+    space_bar:  { active:false, state:false }, 
 
     keyUpDown:function(event) {
 
@@ -137,6 +138,12 @@ frame sets. */
           
         if (controller.n.state != key_state) controller.n.active = key_state;
         controller.n.state  = key_state;
+          
+        break;
+        case 32:// space bar
+          
+        if (controller.space_bar.state != key_state) controller.space_bar.active = key_state;
+        controller.space_bar.state  = key_state;
           
         break;
       }
@@ -207,6 +214,12 @@ frame sets. */
     if (!controller.left.active && !controller.right.active) {
 
       player.animation.change(sprite_sheet.frame_sets[0], 20);
+
+    }
+
+    /* If you're just standing still, change the animation to standing still. */
+    if (controller.space_bar.active) {
+      player.animation.change(sprite_sheet.frame_sets[1], 15);
 
     }
     
