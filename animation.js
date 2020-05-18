@@ -64,7 +64,7 @@ frame sets. */
 
   };
 
-  var buffer, controller, display, loop, player, render, resize, sprite_sheet;
+  var buffer, controller, display, loop, player, cops, render, resize, cops_sprite_sheet, sprite_sheet;
 
   buffer = document.createElement("canvas").getContext("2d");
   display = document.querySelector("canvas").getContext("2d");
@@ -166,6 +166,16 @@ frame sets. */
 
   };
 
+  cops = {
+
+    animation: new Animation(),// You don't need to setup Animation right away.
+    jumping: false,
+    height: 16,    width: 16,
+    x: 0,          y: 40 - 18,
+    x_velocity: 0, y_velocity: 0
+
+  };
+
   //TODO: add some good ol' NYC COPS
 
   /* The sprite sheet object holds the sprite sheet graphic and some animation frame
@@ -174,7 +184,14 @@ frame sets. */
   sprite_sheet = {
 
     frame_sets:[[0, 1], [2, 3], [4, 5]],// standing still, walk right, walk left
-    image:new Image(),
+    image: new Image(),
+
+  };
+
+  cops_sprite_sheet = {
+
+    frame_sets:[[0, 1], [2, 3], [4, 5]],// standing still, walk right, walk left
+    image: new Image(),
 
   };
     
@@ -267,6 +284,7 @@ frame sets. */
     }
 
     player.animation.update();
+    cops.animation.update();
 
     render();
 
@@ -292,6 +310,7 @@ frame sets. */
     /* 02/07/2018 I added Math.floor to the player's x and y positions to eliminate
     antialiasing issues. Take out the Math.floor to see what I mean. */
     buffer.drawImage(sprite_sheet.image, player.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(player.x), Math.floor(player.y), SPRITE_SIZE, SPRITE_SIZE);
+    buffer.drawImage(cops_sprite_sheet.image, cops.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(cops.x), Math.floor(cops.y), SPRITE_SIZE, SPRITE_SIZE);
 
     display.drawImage(buffer.canvas, 0, 0, buffer.canvas.width, buffer.canvas.height, 0, 0, display.canvas.width, display.canvas.height);
 
@@ -334,5 +353,6 @@ frame sets. */
   });
 
       sprite_sheet.image.src = "espen.png"// Start loading the image.
+      cops_sprite_sheet.image.src = "aske-t.png"// Start loading the image.
 
 })();
