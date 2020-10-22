@@ -64,7 +64,7 @@ frame sets. */
 
   };
 
-  var buffer, controller, display, loop, player, cops, render, resize, cops_sprite_sheet, sprite_sheet;
+  var buffer, controller, display, loop, player, cops, render, resize, cops_sprite_sheet, sprite_sheet, band, band_sprite_sheet;
 
   buffer = document.createElement("canvas").getContext("2d");
   display = document.querySelector("canvas").getContext("2d");
@@ -147,7 +147,6 @@ frame sets. */
           
         break;
       }
-      
 
       //console.log("left:  " + controller.left.state + ", " + controller.left.active + "\nright: " + controller.right.state + ", " + controller.right.active + "\nup:    " + controller.up.state + ", " + controller.up.active);
 
@@ -161,7 +160,7 @@ frame sets. */
     animation: new Animation(),// You don't need to setup Animation right away.
     jumping: true,
     height: 16,    width: 16,
-    x: 0,          y: 40 - 18,
+    x:20,          y: 40 - 18,
     x_velocity: 0, y_velocity: 0
 
   };
@@ -172,6 +171,16 @@ frame sets. */
     jumping: false,
     height: 16,    width: 16,
     x: 0,          y: 40 - 18,
+    x_velocity: 0, y_velocity: 0
+
+  };
+
+  band = {
+
+    animation: new Animation(),// You don't need to setup Animation right away.
+    jumping: false,
+    height: 16,    width: 16,
+    x: 40,          y: 40 - 18,
     x_velocity: 0, y_velocity: 0
 
   };
@@ -194,6 +203,13 @@ frame sets. */
     image: new Image(),
 
   };
+
+  band_sprite_sheet = {
+
+    frame_sets:[[0, 1], [2, 3], [4, 5]],// standing still, walk right, walk left
+    image: new Image(),
+
+  };
     
   loop = function(time_stamp) {
 
@@ -201,7 +217,7 @@ frame sets. */
 
       controller.up.active = false;
       player.jumping = true;
-      player.y_velocity -= 5;
+      player.y_velocity -= 7;
 
     }
 
@@ -216,14 +232,14 @@ frame sets. */
 
       /* To change the animation, all you have to do is call animation.change. */
       player.animation.change(sprite_sheet.frame_sets[2], 15);
-      player.x_velocity -= 0.05;
+      player.x_velocity -= 0.075;
 
     }
 
     if (controller.right.active) {
 
       player.animation.change(sprite_sheet.frame_sets[1], 15);
-      player.x_velocity += 0.05;
+      player.x_velocity += 0.075;
 
     }
 
@@ -282,9 +298,21 @@ frame sets. */
       player.x = - player.width;
 
     }
+    //cops are walking
+    cops.animation.change(sprite_sheet.frame_sets[0], 15);
+    cops.x_velocity -= 0.05;
+    cops.y = buffer.canvas.height - 2 - cops.height;
+    cops.y_velocity = 0.5;
+
+    //cops are walking
+    band.animation.change(sprite_sheet.frame_sets[0], 15);
+    band.x_velocity -= 0.05;
+    band.y = buffer.canvas.height - 2 - band.height;
+    band.y_velocity = 0.5;
 
     player.animation.update();
     cops.animation.update();
+    band.animation.update();
 
     render();
 
@@ -296,6 +324,8 @@ frame sets. */
   render = function() {
 
     /* Draw the background. */
+    var background = new Image();
+    background.src = "./pixel-background.jpg";
     buffer.fillStyle = "#333";
     buffer.fillRect(0, 0, buffer.canvas.width, buffer.canvas.height);
     buffer.stroke();
@@ -311,7 +341,10 @@ frame sets. */
     antialiasing issues. Take out the Math.floor to see what I mean. */
     buffer.drawImage(sprite_sheet.image, player.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(player.x), Math.floor(player.y), SPRITE_SIZE, SPRITE_SIZE);
     buffer.drawImage(cops_sprite_sheet.image, cops.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(cops.x), Math.floor(cops.y), SPRITE_SIZE, SPRITE_SIZE);
-
+    buffer.drawImage(band_sprite_sheet.image, band.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(band.x), Math.floor(band.y), SPRITE_SIZE, SPRITE_SIZE);
+  
+    // Make sure the image is loaded first otherwise nothing will draw.
+  
     display.drawImage(buffer.canvas, 0, 0, buffer.canvas.width, buffer.canvas.height, 0, 0, display.canvas.width, display.canvas.height);
 
   };
@@ -354,5 +387,6 @@ frame sets. */
 
       sprite_sheet.image.src = "espen.png"// Start loading the image.
       cops_sprite_sheet.image.src = "aske-t.png"// Start loading the image.
+      band_sprite_sheet.image.src = "nils.png"// Start loading the image.
 
 })();

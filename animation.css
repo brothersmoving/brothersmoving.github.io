@@ -14,20 +14,27 @@ html {
   width:100%;
 
 }
-
 body {
 
+}
+
+canvas {
+
   align-content:space-around;
-  background-color:#202830;
+  /* background-color:#202830; */
   color:#ffffff;
   display:grid;
   grid-template-columns:auto;
   grid-template-rows:auto auto auto;
-  height:100%;
+  height:90vh;
   justify-items:center;
   padding:0 8px;
   width:100%;
 
+}
+.background {
+  background-image: url('./pixel-background.jpg');
+  background-repeat: no-repeat;
 }
 
 h1 {

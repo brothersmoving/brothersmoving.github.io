@@ -4,7 +4,7 @@
   "description": "test game",
   "main": "animation.js",
   "scripts": {
-    "test": ""
+    "test": "start"
   },
   "author": "c.woolf",
   "license": "ISC"
