@@ -16,7 +16,7 @@ html {
 }
 
 body {
-
+  background-color: #202950;
 }
 
 canvas {
@@ -27,7 +27,7 @@ canvas {
   display:grid;
   grid-template-columns:auto;
   grid-template-rows:auto auto auto;
-  height:90vh;
+  height:95vh;
   justify-items:center;
   padding:0 8px;
   width:100%;

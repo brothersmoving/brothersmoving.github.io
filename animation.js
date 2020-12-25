@@ -1,4 +1,19 @@
-// Frank Poth 12/23/2017
+//          88""Yb 88""Yb  dP"Yb  888888 88  88 888888 88""Yb .dP"Y8     
+//          88__dP 88__dP dP   Yb   88   88  88 88__   88__dP `Ybo."     
+//          88""Yb 88"Yb  Yb   dP   88   888888 88""   88"Yb  o.`Y8b     
+//          88oodP 88  Yb  YbodP    88   88  88 888888 88  Yb 8bodP' 
+
+// --------------------------------------------------------------------------------- //
+
+//                8b    d8  dP"Yb  Yb    dP 88 88b 88  dP""b8 
+//                88b  d88 dP   Yb  Yb  dP  88 88Yb88 dP   `" 
+//                88YbdP88 Yb   dP   YbdP   88 88 Y88 Yb  "88 
+//                88 YY 88  YbodP     YP    88 88  Y8  YboodP
+                                                       
+
+// Orignally based on the sprite template by Frank Poth 12/23/2017
+
+// I then modified this simple one sprite animation and used as a boilerplate to add *everything* else -  Chris Woolf started around October 2020
 
 /* This example will show you how to do custom sprite animation in JavaScript.
 It uses an Animation class that handles updating and changing a sprite's current
@@ -64,14 +79,15 @@ frame sets. */
 
   };
 
-  var buffer, controller, display, loop, player, aske, render, resize, aske_sprite_sheet, sprite_sheet, nils, nils_sprite_sheet, taxi_sprite, taxi;
+  var buffer, controller, display, loop, player, aske, render, resize, aske_sprite_sheet, sprite_sheet, nils, nils_sprite_sheet, taxi_sprite, taxi, cop, cop_sprite_sheet;
 
   buffer = document.createElement("canvas").getContext("2d");
   display = document.querySelector("canvas").getContext("2d");
 
+
+
   /* I made some changes to the controller object. */
   controller = {
-
     /* Now each key object knows its physical state as well as its active state.
     When a key is active it is used in the game logic, but its physical state is
     always recorded and never altered for reference. */
@@ -185,6 +201,16 @@ frame sets. */
 
   };
 
+  cop = {
+
+    animation: new Animation(),// You don't need to setup Animation right away.
+    jumping: true,
+    height: 16,    width: 16,
+    x: 195,          y: 80 - 18,
+    x_velocity: 0, y_velocity: 0
+
+  };
+
   taxi = {
     animation: new Animation(),// You don't need to setup Animation right away.
     jumping: false,
@@ -194,7 +220,7 @@ frame sets. */
 
   };
 
-  //TODO: add some good ol' NYC aske
+  //TODO: add some good ol' NYC Cops - done CW Friday 25thd December 06:18am - see git log 08a99b10bcf6c0e3a83f0252843783a50710ac29
 
   /* The sprite sheet object holds the sprite sheet graphic and some animation frame
   sets. An animation frame set is just an array of frame values that correspond to
@@ -214,6 +240,13 @@ frame sets. */
   };
 
   nils_sprite_sheet = {
+
+    frame_sets:[[0, 1], [2, 3], [4, 5]],// standing still, walk right, walk left
+    image: new Image(),
+
+  };
+
+  cop_sprite_sheet = {
 
     frame_sets:[[0, 1], [2, 3], [4, 5]],// standing still, walk right, walk left
     image: new Image(),
@@ -266,10 +299,9 @@ frame sets. */
 
     }
 
-    /* If you're just standing still, change the animation to standing still. */
+    /* Space Bar super power thing */
     if (controller.space_bar.active) {
       player.animation.change(sprite_sheet.frame_sets[1], 15);
-
     }
     
     if (controller.e.active) {
@@ -279,7 +311,6 @@ frame sets. */
     
     if (controller.a.active) {
       player.animation.change(sprite_sheet.image.src = "aske-t.png");
-      
     } 
     
     if (controller.n.active) {
@@ -315,27 +346,44 @@ frame sets. */
       player.x = - player.width;
 
     }
-    //aske are walking
+    //aske is jamming a solo
     aske.animation.change(sprite_sheet.frame_sets[0], 15);
     aske.x_velocity -= 0.05;
     aske.y = buffer.canvas.height - 2 - aske.height;
     aske.y_velocity = 0.5;
 
-    //aske are walking
+    //nils is killing it on bass
     nils.animation.change(sprite_sheet.frame_sets[0], 15);
     nils.x_velocity -= 0.05;
     nils.y = buffer.canvas.height - 2 - nils.height;
     nils.y_velocity = 0.5;
+
+
+    cop.animation.change(cop_sprite_sheet.frame_sets[2], 40);
 
     //taxis are driving
     taxi.x = taxi.x + 1;
     if (taxi.x == 200) {
       taxi.x = -50;
     }
+
+    //cops are walking
+    cop.x = cop.x - 0.2;
+    if (cop.x == -200) {
+      cop.x = 150;
+    }
+
+    // var position = null;
+    // position =  player.x;
+
+    // if (cop.x === position) {
+    //   alert('contact!');
+    // }
     
     player.animation.update();
     aske.animation.update();
     nils.animation.update();
+    cop.animation.update();
     taxi.animation.update();
 
     render();
@@ -397,6 +445,34 @@ frame sets. */
     // buffer.lineTo(200,50);
     // buffer.stroke();
 
+    
+    
+    // TITLE (and such)
+// change font and font-size for better visibilty   
+buffer.font = "bold 15px Arial";    
+buffer.fillStyle = "red"; 
+buffer.textAlign = "center";   
+buffer.fillText( "BROTHERS", 80, 18 );
+
+buffer.font = "italic 15px Times"; 
+buffer.fillStyle = "yellow"; 
+buffer.textAlign = "center"; 
+buffer.fillText( "Moving", 80, 30 );
+
+// draw each string with same X value but different alignment   
+// buffer.textAlign = "start";   
+// buffer.fillText( "start", 80, 30 );    
+   
+// buffer.textAlign = "end";   
+// buffer.fillText( "BROTHERS", 90, 30 );    
+   
+// buffer.textAlign = "left";   
+// buffer.fillText( "left", 80, 90 );    
+   
+// buffer.textAlign = "right";   
+// buffer.fillText( "right", 80, 120 );    
+
+
 
 
 
@@ -411,10 +487,12 @@ frame sets. */
     buffer.drawImage(sprite_sheet.image, player.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(player.x), Math.floor(player.y), SPRITE_SIZE, SPRITE_SIZE);
     buffer.drawImage(aske_sprite_sheet.image, aske.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(aske.x), Math.floor(aske.y), SPRITE_SIZE, SPRITE_SIZE);
     buffer.drawImage(nils_sprite_sheet.image, nils.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(nils.x), Math.floor(nils.y), SPRITE_SIZE, SPRITE_SIZE);
-  
+    buffer.drawImage(cop_sprite_sheet.image, cop.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(cop.x), Math.floor(cop.y), SPRITE_SIZE, SPRITE_SIZE);
+
     // Make sure the image is loaded first otherwise nothing will draw.
-  
     display.drawImage(buffer.canvas, 0, 0, buffer.canvas.width, buffer.canvas.height, 0, 0, display.canvas.width, display.canvas.height);
+
+
 
   };
 
@@ -458,6 +536,7 @@ frame sets. */
       sprite_sheet.image.src = "espen.png"// Start loading the image.
       aske_sprite_sheet.image.src = "aske-t.png"// Start loading the image.
       nils_sprite_sheet.image.src = "nils.png"// Start loading the image.
-      // taxi_sprite.image.src = "taxi.gif"// Start loading the image.
+      cop_sprite_sheet.image.src = "cop.png"// Start loading the image.
+      // title.image.src = "title-text.png"// Start loading the image.
 
 })();
