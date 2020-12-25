@@ -64,7 +64,7 @@ frame sets. */
 
   };
 
-  var buffer, controller, display, loop, player, cops, render, resize, cops_sprite_sheet, sprite_sheet, band, band_sprite_sheet;
+  var buffer, controller, display, loop, player, aske, render, resize, aske_sprite_sheet, sprite_sheet, nils, nils_sprite_sheet, taxi_sprite, taxi;
 
   buffer = document.createElement("canvas").getContext("2d");
   display = document.querySelector("canvas").getContext("2d");
@@ -165,7 +165,7 @@ frame sets. */
 
   };
 
-  cops = {
+  aske = {
 
     animation: new Animation(),// You don't need to setup Animation right away.
     jumping: false,
@@ -175,7 +175,7 @@ frame sets. */
 
   };
 
-  band = {
+  nils = {
 
     animation: new Animation(),// You don't need to setup Animation right away.
     jumping: false,
@@ -185,7 +185,16 @@ frame sets. */
 
   };
 
-  //TODO: add some good ol' NYC COPS
+  taxi = {
+    animation: new Animation(),// You don't need to setup Animation right away.
+    jumping: false,
+    height: 16,    width: 32,
+    x: 0,          y: 75 - 18,
+    x_velocity: 0, y_velocity: 0
+
+  };
+
+  //TODO: add some good ol' NYC aske
 
   /* The sprite sheet object holds the sprite sheet graphic and some animation frame
   sets. An animation frame set is just an array of frame values that correspond to
@@ -197,16 +206,23 @@ frame sets. */
 
   };
 
-  cops_sprite_sheet = {
+  aske_sprite_sheet = {
 
     frame_sets:[[0, 1], [2, 3], [4, 5]],// standing still, walk right, walk left
     image: new Image(),
 
   };
 
-  band_sprite_sheet = {
+  nils_sprite_sheet = {
 
     frame_sets:[[0, 1], [2, 3], [4, 5]],// standing still, walk right, walk left
+    image: new Image(),
+
+  };
+
+  taxi_sprite = {
+
+    frame_sets:[[0,1], [2,3], [4,5]],// standing still, walk right, walk left
     image: new Image(),
 
   };
@@ -239,7 +255,7 @@ frame sets. */
     if (controller.right.active) {
 
       player.animation.change(sprite_sheet.frame_sets[1], 15);
-      player.x_velocity += 0.075;
+      player.x_velocity += 0.075; 
 
     }
 
@@ -286,6 +302,7 @@ frame sets. */
       player.jumping = false;
       player.y = buffer.canvas.height - 2 - player.height;
       player.y_velocity = 0.5;
+      
 
     }
 
@@ -298,21 +315,28 @@ frame sets. */
       player.x = - player.width;
 
     }
-    //cops are walking
-    cops.animation.change(sprite_sheet.frame_sets[0], 15);
-    cops.x_velocity -= 0.05;
-    cops.y = buffer.canvas.height - 2 - cops.height;
-    cops.y_velocity = 0.5;
+    //aske are walking
+    aske.animation.change(sprite_sheet.frame_sets[0], 15);
+    aske.x_velocity -= 0.05;
+    aske.y = buffer.canvas.height - 2 - aske.height;
+    aske.y_velocity = 0.5;
 
-    //cops are walking
-    band.animation.change(sprite_sheet.frame_sets[0], 15);
-    band.x_velocity -= 0.05;
-    band.y = buffer.canvas.height - 2 - band.height;
-    band.y_velocity = 0.5;
+    //aske are walking
+    nils.animation.change(sprite_sheet.frame_sets[0], 15);
+    nils.x_velocity -= 0.05;
+    nils.y = buffer.canvas.height - 2 - nils.height;
+    nils.y_velocity = 0.5;
 
+    //taxis are driving
+    taxi.x = taxi.x + 1;
+    if (taxi.x == 200) {
+      taxi.x = -50;
+    }
+    
     player.animation.update();
-    cops.animation.update();
-    band.animation.update();
+    aske.animation.update();
+    nils.animation.update();
+    taxi.animation.update();
 
     render();
 
@@ -325,12 +349,56 @@ frame sets. */
 
     /* Draw the background. */
     var background = new Image();
-    background.src = "./pixel-background.jpg";
-    buffer.fillStyle = "#333";
+    // background.src = "./pixel-background.jpg";
+    buffer.fillStyle = "#202830";
     buffer.fillRect(0, 0, buffer.canvas.width, buffer.canvas.height);
     buffer.stroke();
-    buffer.fillStyle = "#212121";
+    buffer.fillStyle = "#202830";
     buffer.fillRect(0, 78, buffer.canvas.width, 4);
+
+    /* Draw the pavement */
+    buffer.lineWidth='12';
+    buffer.strokeStyle='gray';
+    buffer.lineCap='square';
+    buffer.beginPath();
+    buffer.moveTo(0,80);
+    buffer.lineTo(200,80);
+    buffer.stroke();
+
+    buffer.lineWidth='50';
+    buffer.strokeStyle='#202850';
+    buffer.beginPath();
+    buffer.moveTo(175,50);
+    buffer.lineTo(0,50);
+    buffer.stroke();
+    
+    // buffer.lineWidth='8';
+    // /* Draw the trains */
+    // buffer.strokeStyle='#f5e8a6';
+    // buffer.beginPath();
+    // buffer.moveTo(0,60);
+    // buffer.lineTo(0,70);
+    // buffer.stroke();
+
+    // buffer.beginPath();
+    // buffer.moveTo(10,65);
+    // buffer.lineTo(10,70);
+    // buffer.stroke();
+
+    // buffer.lineWidth='12';
+    // buffer.beginPath();
+    // buffer.moveTo(75,50);
+    // buffer.lineTo(0,80);
+    // buffer.stroke();
+    // buffer.beginPath();
+    // buffer.strokeStyle='gray';
+    // buffer.lineCap='square';
+    // buffer.moveTo(0,50);
+    // buffer.lineTo(200,50);
+    // buffer.stroke();
+
+
+
 
     /* When you draw your sprite, just use the animation frame value to determine
     where to cut your image from the sprite sheet. It's the same technique used
@@ -339,9 +407,10 @@ frame sets. */
 
     /* 02/07/2018 I added Math.floor to the player's x and y positions to eliminate
     antialiasing issues. Take out the Math.floor to see what I mean. */
+    buffer.drawImage(taxi_sprite.image, taxi.animation.frame * 32, 0, 32, 32, Math.floor(taxi.x), Math.floor(taxi.y), 32, 32);
     buffer.drawImage(sprite_sheet.image, player.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(player.x), Math.floor(player.y), SPRITE_SIZE, SPRITE_SIZE);
-    buffer.drawImage(cops_sprite_sheet.image, cops.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(cops.x), Math.floor(cops.y), SPRITE_SIZE, SPRITE_SIZE);
-    buffer.drawImage(band_sprite_sheet.image, band.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(band.x), Math.floor(band.y), SPRITE_SIZE, SPRITE_SIZE);
+    buffer.drawImage(aske_sprite_sheet.image, aske.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(aske.x), Math.floor(aske.y), SPRITE_SIZE, SPRITE_SIZE);
+    buffer.drawImage(nils_sprite_sheet.image, nils.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(nils.x), Math.floor(nils.y), SPRITE_SIZE, SPRITE_SIZE);
   
     // Make sure the image is loaded first otherwise nothing will draw.
   
@@ -385,8 +454,10 @@ frame sets. */
 
   });
 
+      taxi_sprite.image.src = "ny-taxi.png"// Start loading the image.
       sprite_sheet.image.src = "espen.png"// Start loading the image.
-      cops_sprite_sheet.image.src = "aske-t.png"// Start loading the image.
-      band_sprite_sheet.image.src = "nils.png"// Start loading the image.
+      aske_sprite_sheet.image.src = "aske-t.png"// Start loading the image.
+      nils_sprite_sheet.image.src = "nils.png"// Start loading the image.
+      // taxi_sprite.image.src = "taxi.gif"// Start loading the image.
 
 })();
