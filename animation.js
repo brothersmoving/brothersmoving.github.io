@@ -79,7 +79,7 @@ frame sets. */
 
   };
 
-  var buffer, controller, display, loop, player, aske, render, resize, aske_sprite_sheet, sprite_sheet, nils, nils_sprite_sheet, truck_sprite, truck, cop, cop_sprite_sheet;
+  var buffer, controller, display, loop, player, aske, render, resize, aske_sprite_sheet, sprite_sheet, nils, nils_sprite_sheet, truck_sprite, truck, cop, cop_sprite_sheet, scene_0;
 
   buffer = document.createElement("canvas").getContext("2d");
   display = document.querySelector("canvas").getContext("2d");
@@ -227,28 +227,28 @@ frame sets. */
   each sprite image in the sprite sheet, just like a tile sheet and a tile map. */
   sprite_sheet = {
 
-    frame_sets:[[0, 1], [2, 3], [4, 5]],// standing still, walk right, walk left
+    frame_sets:[[0, 1], [2, 3], [4, 5], [6, 7]],// standing still, walk right, walk left
     image: new Image(),
 
   };
 
   aske_sprite_sheet = {
 
-    frame_sets:[[0, 1], [2, 3], [4, 5]],// standing still, walk right, walk left
+    frame_sets:[[0, 1], [2, 3], [4, 5], [6, 7]],// standing still, walk right, walk left
     image: new Image(),
 
   };
 
   nils_sprite_sheet = {
 
-    frame_sets:[[0, 1], [2, 3], [4, 5]],// standing still, walk right, walk left
+    frame_sets:[[0, 1], [2, 3], [4, 5], [6, 7]],// standing still, walk right, walk left
     image: new Image(),
 
   };
 
   cop_sprite_sheet = {
 
-    frame_sets:[[0, 1], [2, 3], [4, 5]],// standing still, walk right, walk left
+    frame_sets:[[0, 1], [2, 3], [4, 5], [6, 7]],// standing still, walk right, walk left
     image: new Image(),
 
   };
@@ -257,6 +257,13 @@ frame sets. */
 
     frame_sets:[[0,1], [2,3], [4,5]],// standing still, walk right, walk left
     image: new Image(),
+
+  };
+
+  scene_0 = {
+
+    image0: new Image(),
+    image1: new Image(),
 
   };
     
@@ -272,40 +279,35 @@ frame sets. */
 
     if (controller.down.active) {
       /* To change the animation, all you have to do is call animation.change. */
-      player.animation.change(sprite_sheet.frame_sets[1], 15);
-      player.x_velocity -= 0.00;
+      player.animation.change(sprite_sheet.frame_sets[3], 15);
 
     }
 
     if (controller.left.active) {
-
       /* To change the animation, all you have to do is call animation.change. */
       player.animation.change(sprite_sheet.frame_sets[2], 15);
-      player.x_velocity -= 0.075;
+      player.x_velocity -= 0.095;
 
     }
 
     if (controller.right.active) {
-
       player.animation.change(sprite_sheet.frame_sets[1], 15);
-      player.x_velocity += 0.075; 
-
+      player.x_velocity += 0.095; 
     }
 
     /* If you're just standing still, change the animation to standing still. */
     if (!controller.left.active && !controller.right.active) {
-
       player.animation.change(sprite_sheet.frame_sets[0], 20);
-
     }
 
     /* Space Bar super power thing */
     if (controller.space_bar.active) {
-      player.animation.change(sprite_sheet.frame_sets[1], 15);
+      player.animation.change(sprite_sheet.frame_sets[3], 15);
+      player.x_velocity = 0.0;
     }
     
     if (controller.e.active) {
-      player.animation.change(sprite_sheet.image.src = "espen.png");
+      player.animation.change(sprite_sheet.image.src = "espen-1.png");
       
     } 
     
@@ -358,16 +360,19 @@ frame sets. */
     nils.y = buffer.canvas.height - 2 - nils.height;
     nils.y_velocity = 0.5;
 
+    //Truuuuuck ! - Big wheels keep on turning
+    truck.animation.change(sprite_sheet.frame_sets[0], 30);
 
-    cop.animation.change(cop_sprite_sheet.frame_sets[2], 40);
-
+    
     //trucks are driving
     truck.x = truck.x - 1;
     if (truck.x == -200) {
       truck.x = 150;
     }
 
+    
     //cops are walking
+    cop.animation.change(cop_sprite_sheet.frame_sets[2], 40);
     cop.x = cop.x - 0.2;
     if (cop.x == -200) {
       cop.x = 150;
@@ -404,6 +409,21 @@ frame sets. */
     buffer.fillStyle = "#202830";
     buffer.fillRect(0, 78, buffer.canvas.width, 4);
 
+    buffer.lineWidth='50';
+    buffer.strokeStyle='#202850';
+    buffer.beginPath();
+    buffer.moveTo(175,50);
+    buffer.lineTo(0,50);
+    buffer.stroke();
+
+    buffer.lineWidth='9';
+    buffer.strokeStyle='#212121';
+    buffer.lineCap='square';
+    buffer.beginPath();
+    buffer.moveTo(0,77);
+    buffer.lineTo(200,77);
+    buffer.stroke();
+
     /* Draw the pavement */
     buffer.lineWidth='12';
     buffer.strokeStyle='gray';
@@ -413,12 +433,6 @@ frame sets. */
     buffer.lineTo(200,80);
     buffer.stroke();
 
-    buffer.lineWidth='50';
-    buffer.strokeStyle='#202850';
-    buffer.beginPath();
-    buffer.moveTo(175,50);
-    buffer.lineTo(0,50);
-    buffer.stroke();
     
     // buffer.lineWidth='8';
     // /* Draw the trains */
@@ -475,22 +489,28 @@ frame sets. */
 
 
 
+/* When you draw your sprite, just use the animation frame value to determine
+where to cut your image from the sprite sheet. It's the same technique used
+for cutting tiles out of a tile sheet. Here I have a very easy implementation
+set up because my sprite sheet is only a single row. */
 
-    /* When you draw your sprite, just use the animation frame value to determine
-    where to cut your image from the sprite sheet. It's the same technique used
-    for cutting tiles out of a tile sheet. Here I have a very easy implementation
-    set up because my sprite sheet is only a single row. */
+/* 02/07/2018 I added Math.floor to the player's x and y positions to eliminate
+antialiasing issues. Take out the Math.floor to see what I mean. */
+buffer.drawImage(truck_sprite.image, truck.animation.frame * 32, 0, 32, 32, Math.floor(truck.x), Math.floor(truck.y), 32, 32);
 
-    /* 02/07/2018 I added Math.floor to the player's x and y positions to eliminate
-    antialiasing issues. Take out the Math.floor to see what I mean. */
-    buffer.drawImage(truck_sprite.image, truck.animation.frame * 32, 0, 32, 32, Math.floor(truck.x), Math.floor(truck.y), 32, 32);
-    buffer.drawImage(sprite_sheet.image, player.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(player.x), Math.floor(player.y), SPRITE_SIZE, SPRITE_SIZE);
-    buffer.drawImage(aske_sprite_sheet.image, aske.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(aske.x), Math.floor(aske.y), SPRITE_SIZE, SPRITE_SIZE);
-    buffer.drawImage(nils_sprite_sheet.image, nils.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(nils.x), Math.floor(nils.y), SPRITE_SIZE, SPRITE_SIZE);
-    buffer.drawImage(cop_sprite_sheet.image, cop.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(cop.x), Math.floor(cop.y), SPRITE_SIZE, SPRITE_SIZE);
 
-    // Make sure the image is loaded first otherwise nothing will draw.
-    display.drawImage(buffer.canvas, 0, 0, buffer.canvas.width, buffer.canvas.height, 0, 0, display.canvas.width, display.canvas.height);
+// Scenes Level-0 (wrap all of this in an if conditional)
+buffer.drawImage(scene_0.image0, 35, 60);
+// buffer.drawImage(scene_0.image1, 0, 0, 731, 256, 0, 0, 185, 55);
+
+buffer.drawImage(sprite_sheet.image, player.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(player.x), Math.floor(player.y), SPRITE_SIZE, SPRITE_SIZE);
+buffer.drawImage(aske_sprite_sheet.image, aske.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(aske.x), Math.floor(aske.y), SPRITE_SIZE, SPRITE_SIZE);
+buffer.drawImage(nils_sprite_sheet.image, nils.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(nils.x), Math.floor(nils.y), SPRITE_SIZE, SPRITE_SIZE);
+buffer.drawImage(cop_sprite_sheet.image, cop.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(cop.x), Math.floor(cop.y), SPRITE_SIZE, SPRITE_SIZE);
+
+
+// Make sure the image is loaded first otherwise nothing will draw.
+display.drawImage(buffer.canvas, 0, 0, buffer.canvas.width, buffer.canvas.height, 0, 0, display.canvas.width, display.canvas.height);
 
 
 
@@ -533,10 +553,14 @@ frame sets. */
   });
 
       truck_sprite.image.src = "truck.png"// Start loading the image.
-      sprite_sheet.image.src = "espen.png"// Start loading the image.
+      sprite_sheet.image.src = "espen-1.png"// Start loading the image.
       aske_sprite_sheet.image.src = "aske-t.png"// Start loading the image.
       nils_sprite_sheet.image.src = "nils.png"// Start loading the image.
       cop_sprite_sheet.image.src = "cop.png"// Start loading the image.
+
+      // Scenes - Level 0
+      scene_0.image0.src = "./levels/0/scene-0.png"// Start loading the image.
+      scene_0.image1.src = "./levels/0/scene-0-bkdrop.png"// Start loading the image.
       // title.image.src = "title-text.png"// Start loading the image.
 
 })();
