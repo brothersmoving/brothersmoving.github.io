@@ -79,7 +79,7 @@ frame sets. */
 
   };
 
-  var buffer, controller, display, loop, player, aske, render, resize, aske_sprite_sheet, sprite_sheet, nils, nils_sprite_sheet, taxi_sprite, taxi, cop, cop_sprite_sheet;
+  var buffer, controller, display, loop, player, aske, render, resize, aske_sprite_sheet, sprite_sheet, nils, nils_sprite_sheet, truck_sprite, truck, cop, cop_sprite_sheet;
 
   buffer = document.createElement("canvas").getContext("2d");
   display = document.querySelector("canvas").getContext("2d");
@@ -211,11 +211,11 @@ frame sets. */
 
   };
 
-  taxi = {
+  truck = {
     animation: new Animation(),// You don't need to setup Animation right away.
     jumping: false,
-    height: 16,    width: 32,
-    x: 0,          y: 75 - 18,
+    height: 32,    width: 32,
+    x: 0,          y: 75 - 34,
     x_velocity: 0, y_velocity: 0
 
   };
@@ -253,7 +253,7 @@ frame sets. */
 
   };
 
-  taxi_sprite = {
+  truck_sprite = {
 
     frame_sets:[[0,1], [2,3], [4,5]],// standing still, walk right, walk left
     image: new Image(),
@@ -361,10 +361,10 @@ frame sets. */
 
     cop.animation.change(cop_sprite_sheet.frame_sets[2], 40);
 
-    //taxis are driving
-    taxi.x = taxi.x + 1;
-    if (taxi.x == 200) {
-      taxi.x = -50;
+    //trucks are driving
+    truck.x = truck.x - 1;
+    if (truck.x == -200) {
+      truck.x = 150;
     }
 
     //cops are walking
@@ -384,7 +384,7 @@ frame sets. */
     aske.animation.update();
     nils.animation.update();
     cop.animation.update();
-    taxi.animation.update();
+    truck.animation.update();
 
     render();
 
@@ -449,15 +449,15 @@ frame sets. */
     
     // TITLE (and such)
 // change font and font-size for better visibilty   
-buffer.font = "bold 15px Arial";    
-buffer.fillStyle = "red"; 
-buffer.textAlign = "center";   
-buffer.fillText( "BROTHERS", 80, 18 );
+// buffer.font = "bold 15px Arial";    
+// buffer.fillStyle = "red"; 
+// buffer.textAlign = "center";   
+// buffer.fillText( "BROTHERS", 80, 18 );
 
-buffer.font = "italic 15px Times"; 
-buffer.fillStyle = "yellow"; 
-buffer.textAlign = "center"; 
-buffer.fillText( "Moving", 80, 30 );
+// buffer.font = "italic 15px Times"; 
+// buffer.fillStyle = "yellow"; 
+// buffer.textAlign = "center"; 
+// buffer.fillText( "Moving", 80, 30 );
 
 // draw each string with same X value but different alignment   
 // buffer.textAlign = "start";   
@@ -483,7 +483,7 @@ buffer.fillText( "Moving", 80, 30 );
 
     /* 02/07/2018 I added Math.floor to the player's x and y positions to eliminate
     antialiasing issues. Take out the Math.floor to see what I mean. */
-    buffer.drawImage(taxi_sprite.image, taxi.animation.frame * 32, 0, 32, 32, Math.floor(taxi.x), Math.floor(taxi.y), 32, 32);
+    buffer.drawImage(truck_sprite.image, truck.animation.frame * 32, 0, 32, 32, Math.floor(truck.x), Math.floor(truck.y), 32, 32);
     buffer.drawImage(sprite_sheet.image, player.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(player.x), Math.floor(player.y), SPRITE_SIZE, SPRITE_SIZE);
     buffer.drawImage(aske_sprite_sheet.image, aske.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(aske.x), Math.floor(aske.y), SPRITE_SIZE, SPRITE_SIZE);
     buffer.drawImage(nils_sprite_sheet.image, nils.animation.frame * SPRITE_SIZE, 0, SPRITE_SIZE, SPRITE_SIZE, Math.floor(nils.x), Math.floor(nils.y), SPRITE_SIZE, SPRITE_SIZE);
@@ -532,7 +532,7 @@ buffer.fillText( "Moving", 80, 30 );
 
   });
 
-      taxi_sprite.image.src = "ny-taxi.png"// Start loading the image.
+      truck_sprite.image.src = "truck.png"// Start loading the image.
       sprite_sheet.image.src = "espen.png"// Start loading the image.
       aske_sprite_sheet.image.src = "aske-t.png"// Start loading the image.
       nils_sprite_sheet.image.src = "nils.png"// Start loading the image.
