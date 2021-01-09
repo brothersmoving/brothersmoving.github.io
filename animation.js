@@ -308,15 +308,24 @@ frame sets. */
     
     if (controller.e.active) {
       player.animation.change(sprite_sheet.image.src = "espen-1.png");
-      
+      aske_sprite_sheet.image.src = "aske-t.png";
+      nils_sprite_sheet.image.src = "nils.png";
+      player_sprite_sheet.image.src = "espen-1.png";
     } 
     
     if (controller.a.active) {
-      player.animation.change(sprite_sheet.image.src = "aske-t.png");
+      player.animation.change(sprite_sheet.image.src = "aske-t.png")
+      aske_sprite_sheet.image.src = "espen-1.png";
+      nils_sprite_sheet.image.src = "nils.png";
+      player_sprite_sheet.image.src = "aske-t.png";
+      
     } 
     
     if (controller.n.active) {
       player.animation.change(sprite_sheet.image.src = "nils.png");
+      nils_sprite_sheet.image.src = "espen-1.png";
+      aske_sprite_sheet.image.src = "aske-t.png";
+      player_sprite_sheet.image.src = "nils.png";
       
     } 
     
@@ -348,6 +357,7 @@ frame sets. */
       player.x = - player.width;
 
     }
+    
     //aske is jamming a solo
     aske.animation.change(sprite_sheet.frame_sets[0], 15);
     aske.x_velocity -= 0.05;
